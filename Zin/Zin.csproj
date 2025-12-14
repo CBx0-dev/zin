@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+    
+    <Target Name="Display" BeforeTargets="Build">
+        <Message Text="RuntimeIdentifier '$(RuntimeIdentifier)'" IsCritical="true" Importance="high" />
+    </Target>
+    
+    <!-- region Linux x64 -->
+<!--    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">-->
+    <ItemGroup>
+        <ProjectReference Include="..\Zin.Platform.Linux\Zin.Platform.Linux.csproj" />
+    </ItemGroup>
+    
+<!--    <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">-->
+    <PropertyGroup>
+        <DefineConstants>LINUX_X64</DefineConstants>
+    </PropertyGroup>
+    <!-- endregion -->
+    
+    <!-- region Windows x64 -->
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+        <ProjectReference Include="..\Zin.Platform.Windows\Zin.Platform.Windows.csproj" />
+    </ItemGroup>
+    
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+        <DefineConstants>WINDOWS_X64</DefineConstants>
+    </PropertyGroup>
+    <!-- endregion -->
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
+    </ItemGroup>
+
+</Project>

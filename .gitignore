@@ -1,0 +1,9 @@
+﻿bin/
+obj/
+
+.idea/
+*.DotSettings.user
+
+project.lock.json
+project.fragment.lock.json
+artifacts/

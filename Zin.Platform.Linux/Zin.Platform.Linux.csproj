@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+
+        <NativeOutputDir>$(BaseIntermediateOutputPath)native</NativeOutputDir>
+    </PropertyGroup>
+
+    <Target Name="BuildNative" BeforeTargets="Build">
+        <MakeDir Directories="$(NativeOutputDir)" />
+        
+        <Exec Command="zig cc -fPIC -shared ./Native/termshim.c -o $(NativeOutputDir)/libtermshim.so -target x86_64-linux-gnu" />
+    </Target>
+    
+    <ItemGroup>
+        <None 
+            Include="$(NativeOutputDir)/libtermshim.so"
+            CopyToOutputDirectory="PreserveNewest"
+            Link="libtermshim.so"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj" />
+    </ItemGroup>
+</Project>

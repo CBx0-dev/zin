@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Zin/Zin.csproj" />
+  <Project Path="Zin.Platform.Base/Zin.Platform.Base.csproj" />
+  <Project Path="Zin.Platform.Linux/Zin.Platform.Linux.csproj" />
+  <Project Path="Zin.Platform.Windows/Zin.Platform.Windows.csproj" />
+</Solution>

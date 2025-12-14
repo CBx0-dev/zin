@@ -1,0 +1,93 @@
+﻿using System;
+
+namespace Zin.Platform.Base;
+
+public class InputChar : IEquatable<InputChar>
+{
+    public readonly byte Raw;
+    public bool Ctrl => Raw >= 1 && Raw <= 26;
+    public bool Invalid => Raw == 0;
+    public char Char
+    {
+        get
+        {
+            if (Ctrl)
+            {
+                return (char)('a' + Raw - 1);
+            }
+
+            return (char)Raw;
+        }
+    }
+
+    public InputChar(char c, bool ctrl)
+    {
+        byte b = (byte)c;
+        if (ctrl)
+        {
+            b = (byte)(b & 0x1F);
+        }
+
+        Raw = b;
+    }
+
+    public InputChar(byte raw)
+    {
+        Raw = raw;
+    }
+
+    public static bool operator ==(InputChar left, InputChar right)
+    {
+        if (left is null)
+        {
+            return right is null;
+        }
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(InputChar left, InputChar right)
+    {
+        if (left is null)
+        {
+            return right is not null;
+        }
+
+        return !left.Equals(right);
+    }
+
+    public bool Equals(InputChar other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return Raw == other.Raw;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
+        return Equals((InputChar)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return Raw.GetHashCode();
+    }
+}
