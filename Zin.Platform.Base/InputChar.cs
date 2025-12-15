@@ -6,8 +6,8 @@ public class InputChar : IEquatable<InputChar>
 {
     public readonly byte Raw;
     public readonly bool Escape;
-    public bool Ctrl => Raw >= 1 && Raw <= 26;
-    public bool Invalid => Raw == 0;
+    public bool Ctrl => Raw is >= 1 and <= 26;
+    public bool Invalid => !Escape && Raw == 0;
 
     public char Char
     {
@@ -40,7 +40,7 @@ public class InputChar : IEquatable<InputChar>
         Escape = false;
     }
 
-    public InputChar(InputChar.EscapeCode raw, bool escape)
+    public InputChar(EscapeCode raw, bool escape)
     {
         Raw = (byte)raw;
         Escape = escape;
@@ -73,7 +73,7 @@ public class InputChar : IEquatable<InputChar>
             return false;
         }
 
-        return Raw == other.Raw;
+        return Raw == other.Raw && Escape == other.Escape;
     }
 
     public override bool Equals(object obj)
@@ -111,6 +111,9 @@ public class InputChar : IEquatable<InputChar>
         ArrowRight,
 
         PageUp,
-        PageDown
+        PageDown,
+        Delete,
+        End,
+        Home,
     }
 }
