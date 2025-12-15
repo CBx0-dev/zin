@@ -13,10 +13,10 @@ public sealed class ZinEditor
     private readonly KeyMap _keyMap;
     private bool _stopped;
     private RenderChain _renderChain;
-    
-	public Cursor Cursor;
-	public int Width => _terminal.Width;
-	public int Height => _terminal.Height;
+
+    public Cursor Cursor;
+    public int Width => _terminal.Width;
+    public int Height => _terminal.Height;
 
     public ZinEditor(ITerminal terminal, KeyMap keyMap)
     {
@@ -25,7 +25,7 @@ public sealed class ZinEditor
         _stopped = false;
         _renderChain = new RenderChain(terminal.Width, terminal.Height);
         Cursor = new Cursor();
-		Cursor.Y = 10;
+        Cursor.Y = 10;
     }
 
     public void Run()
@@ -42,8 +42,8 @@ public sealed class ZinEditor
 
 
             _keyMap.ExecuteShortcut(this, c);
-            
-			if (_stopped)
+
+            if (_stopped)
             {
                 _renderChain.PrepareRender();
                 _renderChain.ClearScreen();
@@ -51,8 +51,8 @@ public sealed class ZinEditor
                 _terminal.Write(_renderChain.Render());
                 break;
             }
-            
-			Render();
+
+            Render();
         }
     }
 
@@ -62,7 +62,7 @@ public sealed class ZinEditor
     {
         _renderChain.PrepareRender();
         _renderChain.HideCursor();
-		_renderChain.MoveCursor();
+        _renderChain.MoveCursor();
 
         RenderRows();
 

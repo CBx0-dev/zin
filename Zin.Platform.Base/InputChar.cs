@@ -5,9 +5,10 @@ namespace Zin.Platform.Base;
 public class InputChar : IEquatable<InputChar>
 {
     public readonly byte Raw;
-	public readonly bool Escape;
+    public readonly bool Escape;
     public bool Ctrl => Raw >= 1 && Raw <= 26;
     public bool Invalid => Raw == 0;
+
     public char Char
     {
         get
@@ -21,28 +22,29 @@ public class InputChar : IEquatable<InputChar>
         }
     }
 
-	public InputChar(char c, bool ctrl)
-	{
-		byte b = (byte)c;
-		if (ctrl) {
-			b = (byte)(b & 0x1F);
-		}
+    public InputChar(char c, bool ctrl)
+    {
+        byte b = (byte)c;
+        if (ctrl)
+        {
+            b = (byte)(b & 0x1F);
+        }
 
-		Raw = b;
-		Escape = false;
-	}
+        Raw = b;
+        Escape = false;
+    }
 
     public InputChar(byte raw)
     {
         Raw = raw;
-		Escape = false;
+        Escape = false;
     }
 
-	public InputChar(InputChar.EscapeCode raw, bool escape)
-	{
-		Raw = (byte)raw;
-		Escape = escape;
-	}
+    public InputChar(InputChar.EscapeCode raw, bool escape)
+    {
+        Raw = (byte)raw;
+        Escape = escape;
+    }
 
     public static bool operator ==(InputChar left, InputChar right)
     {
@@ -99,15 +101,16 @@ public class InputChar : IEquatable<InputChar>
         return Raw.GetHashCode();
     }
 
-	public enum EscapeCode : byte {
-		Escape,
+    public enum EscapeCode : byte
+    {
+        Escape,
 
-		ArrowUp,
-		ArrowDown,
-		ArrowLeft,
-		ArrowRight,
+        ArrowUp,
+        ArrowDown,
+        ArrowLeft,
+        ArrowRight,
 
-		PageUp,
-		PageDown
-	}
+        PageUp,
+        PageDown
+    }
 }

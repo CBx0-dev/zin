@@ -15,5 +15,4 @@ internal static class TermShim
 
     [DllImport("termshim", EntryPoint = "term_write", CharSet = CharSet.Ansi)]
     public static extern bool Write([MarshalAs(UnmanagedType.LPStr)] string buf, int count);
-
 }

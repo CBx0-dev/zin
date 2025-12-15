@@ -35,10 +35,10 @@ public sealed class LinuxTerminal : ITerminal
             return new InputChar(0);
         }
 
-		if (c == '\x1b')
-		{
-			return VT100Parser.Parse(this);
-		}
+        if (c == '\x1b')
+        {
+            return VT100Parser.Parse(this);
+        }
 
         return new InputChar(c);
     }

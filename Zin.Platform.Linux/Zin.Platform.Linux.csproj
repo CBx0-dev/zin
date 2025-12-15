@@ -9,19 +9,19 @@
     </PropertyGroup>
 
     <Target Name="BuildNative" BeforeTargets="CoreCompile">
-        <MakeDir Directories="$(NativeOutputDir)" />
-        
-        <Exec Command="zig cc -fPIC -shared ./Native/termshim.c -o $(NativeOutputDir)/libtermshim.so -target x86_64-linux-gnu" />
+        <MakeDir Directories="$(NativeOutputDir)"/>
+
+        <Exec Command="zig cc -fPIC -shared ./Native/termshim.c -o $(NativeOutputDir)/libtermshim.so -target x86_64-linux-gnu"/>
     </Target>
 
-	<ItemGroup>
-		<ContentWithTargetPath Include="$(NativeOutputDir)/libtermshim.so">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    		<TargetPath>libtermshim.so</TargetPath>
-		</ContentWithTargetPath>
-	</ItemGroup>
+    <ItemGroup>
+        <ContentWithTargetPath Include="$(NativeOutputDir)/libtermshim.so">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TargetPath>libtermshim.so</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj" />
+        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
     </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
 
@@ -10,20 +10,20 @@
     </PropertyGroup>
 
     <Target Name="BuildNative" BeforeTargets="CoreCompile">
-        <MakeDir Directories="$(NativeOutputDir)" />
+        <MakeDir Directories="$(NativeOutputDir)"/>
 
-        <Exec Command="zig cc -shared ./Native/termshim.c -o $(NativeOutputDir)/termshim.dll -target x86_64-windows-gnu" />
+        <Exec Command="zig cc -shared ./Native/termshim.c -o $(NativeOutputDir)/termshim.dll -target x86_64-windows-gnu"/>
     </Target>
 
-	<ItemGroup>
-		<ContentWithTargetPath Include="$(NativeOutputDir)/termshim.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    		<TargetPath>termshim.dll</TargetPath>
-		</ContentWithTargetPath>
-	</ItemGroup>
+    <ItemGroup>
+        <ContentWithTargetPath Include="$(NativeOutputDir)/termshim.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TargetPath>termshim.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
+    </ItemGroup>
 
 </Project>
