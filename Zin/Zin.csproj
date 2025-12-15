@@ -2,27 +2,39 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks>net10.0-windows;net10.0</TargetFrameworks>
+        <TargetFrameworks>net10.0</TargetFrameworks>
+		<RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
+	<!-- region RID check -->
+	<PropertyGroup>
+  		<_RIDMissing Condition="'$(RuntimeIdentifier)' == ''">true</_RIDMissing>
+		<_RIDInvalid Condition="'$(_RIDMissing)' != 'true' and $([System.String]::Copy('$(RuntimeIdentifiers)').Contains($(RuntimeIdentifier))) == 'false'">true</_RIDInvalid>
+	</PropertyGroup>
+
+	<Target Name="ValidateRuntimeIdentifier" BeforeTargets="PrepareForBuild" Condition="'$(_RIDMissing)' == 'true' or '$(_RIDInvalid)' == 'true'">
+  		<Error Text="Invalid or missing RuntimeIdentifier. You must specify one of the allowed RIDs using -r:$(RuntimeIdentifiers) Example: dotnet build -r linux-x64" />
+	</Target>
+	<!-- endregion -->
+
     <!-- region Linux x64 -->
-    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
         <ProjectReference Include="..\Zin.Platform.Linux\Zin.Platform.Linux.csproj" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
         <DefineConstants>LINUX_X64</DefineConstants>
     </PropertyGroup>
     <!-- endregion -->
     
     <!-- region Windows x64 -->
-    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
         <ProjectReference Include="..\Zin.Platform.Windows\Zin.Platform.Windows.csproj" />
     </ItemGroup>
     
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
         <DefineConstants>WINDOWS_X64</DefineConstants>
     </PropertyGroup>
     <!-- endregion -->

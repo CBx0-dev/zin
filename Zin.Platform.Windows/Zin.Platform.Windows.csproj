@@ -1,36 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0-windows</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
 
-        <NativeInputDir>$(MSBuildProjectDirectory)/Native</NativeInputDir>
         <NativeOutputDir>$(BaseIntermediateOutputPath)native</NativeOutputDir>
-        <NativeLibName>libtermshim.dll</NativeLibName>
     </PropertyGroup>
 
-    <ItemGroup>
-        <NativeSources Include="$(NativeInputDir)/*.c" />
-    </ItemGroup>
-
-    <Target Name="BuildNative"
-            Inputs="@(NativeSources)"
-            Outputs="$(NativeOutputDir)/$(NativeLibName)"
-            AfterTargets="Build">
-
-        <MakeDir Directories="$(OutputPath)" />
+    <Target Name="BuildNative" BeforeTargets="CoreCompile">
         <MakeDir Directories="$(NativeOutputDir)" />
 
-        <Exec Command="zig cc -fPIC -shared @(NativeSources) -o $(NativeOutputDir)/$(NativeLibName) -target x86_64-windows-gnu" />
-
-        <Copy SourceFiles="$(NativeOutputDir)/$(NativeLibName)"
-              DestinationFolder="$(OutputPath)"
-              SkipUnchangedFiles="false" />
+        <Exec Command="zig cc -shared ./Native/termshim.c -o $(NativeOutputDir)/termshim.dll -target x86_64-windows-gnu" />
     </Target>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ContentWithTargetPath Include="$(NativeOutputDir)/termshim.dll">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    		<TargetPath>termshim.dll</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj" />
+	</ItemGroup>
 
 </Project>
