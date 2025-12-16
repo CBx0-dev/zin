@@ -30,7 +30,7 @@ public sealed class ZinEditor
 
     public void Run()
     {
-        Render();
+        Render(null);
 
         while (true)
         {
@@ -52,13 +52,13 @@ public sealed class ZinEditor
                 break;
             }
 
-            Render();
+            Render(c);
         }
     }
 
     public void Stop() => _stopped = true;
 
-    private void Render()
+    private void Render(InputChar c)
     {
         _renderChain.PrepareRender();
         _renderChain.HideCursor();
@@ -69,6 +69,12 @@ public sealed class ZinEditor
         string title = $"{Title} v{Version}";
         _renderChain.MoveCursor(Cursor);
         _renderChain.Write(title);
+
+        if (c is not null)
+        {
+            _renderChain.MoveCursor(0, 0);
+            _renderChain.Write($"Input Char: {c.Char}, Ctrl: {c.Ctrl}, Escape: {c.Escape}");
+        }
 
         _renderChain.MoveCursor(Cursor);
         _renderChain.ShowCursor();

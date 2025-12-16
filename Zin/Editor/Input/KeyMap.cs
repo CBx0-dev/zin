@@ -36,6 +36,11 @@ public sealed class KeyMap
         map.RegisterAction(new InputChar(InputChar.EscapeCode.ArrowLeft, true), EditorActions.MoveCursorLeft);
         map.RegisterAction(new InputChar(InputChar.EscapeCode.ArrowRight, true), EditorActions.MoveCursorRight);
 
+        // map.RegisterAction(new InputChar('w', false), EditorActions.MoveCursorUp);
+        // map.RegisterAction(new InputChar('s', false), EditorActions.MoveCursorDown);
+        // map.RegisterAction(new InputChar('a', false), EditorActions.MoveCursorLeft);
+        // map.RegisterAction(new InputChar('d', false), EditorActions.MoveCursorRight);
+
         map.RegisterAction(new InputChar(InputChar.EscapeCode.PageUp, true), EditorActions.MoveCursorUp);
         map.RegisterAction(new InputChar(InputChar.EscapeCode.PageDown, true), EditorActions.MoveCursorDown);
 
