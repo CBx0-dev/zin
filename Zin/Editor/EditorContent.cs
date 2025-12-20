@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Zin.Editor.Input;
 
 namespace Zin.Editor;
 
 public class EditorContent
 {
     private List<string> _rows;
- 
-    public Cursor ScrollOffset;
+
+    public Vector2 ScrollOffset;
     public int MaxWidth { get; private set; }
 
     public int Count => _rows.Count;
@@ -17,7 +16,7 @@ public class EditorContent
     public EditorContent(int capacity)
     {
         _rows = new List<string>(capacity);
-        ScrollOffset = new Cursor();
+        ScrollOffset = new Vector2();
         MaxWidth = 0;
     }
 

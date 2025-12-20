@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Zin.Editor.Input;
 using Zin.Platform.Base;
 
 namespace Zin.Editor;
@@ -14,7 +13,7 @@ public sealed class ZinEditor
     private bool _stopped;
     private RenderChain _renderChain;
     
-    public Cursor Cursor;
+    public Vector2 Cursor;
     public EditorContent Content;
     
     public int Width => _terminal.Width;
@@ -30,7 +29,7 @@ public sealed class ZinEditor
         _stopped = false;
         _renderChain = new RenderChain(terminal.Width, terminal.Height);
         Content = new EditorContent(terminal.Height);
-        Cursor = new Cursor();
+        Cursor = new Vector2();
     }
 
     public void Run()

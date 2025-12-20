@@ -52,7 +52,7 @@ public sealed class RenderChain
     /**
      * Moves the cursor to the given position
      */
-    public void MoveCursor(Cursor cursor)
+    public void MoveCursor(Vector2 cursor)
     {
         _renderBuffer.Append(ESC_CURS_MV_TO_0);
         _renderBuffer.Append(cursor.Y + 1);

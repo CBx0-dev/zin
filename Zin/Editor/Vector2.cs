@@ -1,17 +1,17 @@
 ﻿namespace Zin.Editor;
 
-public struct Cursor
+public struct Vector2
 {
     public int X;
     public int Y;
 
-    public Cursor()
+    public Vector2()
     {
         X = 0;
         Y = 0;
     }
 
-    public Cursor(int x, int y)
+    public Vector2(int x, int y)
     {
         X = x;
         Y = y;

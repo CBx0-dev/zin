@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Zin.Platform.Base;
 
-namespace Zin.Editor.Input;
+namespace Zin.Editor;
 
 public sealed class KeyMap
 {
