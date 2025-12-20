@@ -98,7 +98,7 @@ public class InputChar : IEquatable<InputChar>
 
     public override int GetHashCode()
     {
-        return Raw.GetHashCode();
+        return HashCode.Combine(Raw, Escape);
     }
 
     public enum EscapeCode : byte
