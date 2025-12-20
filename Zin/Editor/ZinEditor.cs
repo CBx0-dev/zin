@@ -34,7 +34,7 @@ public sealed class ZinEditor
 
     public void Run()
     {
-        Render(null);
+        Render();
 
         while (true)
         {
@@ -51,13 +51,13 @@ public sealed class ZinEditor
                 break;
             }
 
-            Render(c);
+            Render();
         }
     }
 
     public void Stop() => _stopped = true;
 
-    private void Render(InputChar c)
+    private void Render()
     {
         _renderChain.PrepareRender();
         _renderChain.HideCursor();
