@@ -26,12 +26,17 @@ public sealed class WindowsTerminal : ITerminal
 
     public InputChar Read()
     {
-        if (TermShim.Read(out byte c) != 1)
+        if (TermShim.Read(out ushort c) != 1)
         {
             return new InputChar(0);
         }
 
-        return new InputChar(c);
+        if (c < 256)
+        {
+            return new InputChar((byte)c);
+        }
+
+        return new InputChar((InputChar.EscapeCode)(byte)(c - 256), true);
     }
 
     public void Write(string text) => TermShim.Write(text, text.Length);

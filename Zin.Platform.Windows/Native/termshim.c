@@ -1,39 +1,60 @@
 ﻿#include <windows.h>
 
 #if defined(_MSC_VER)
-#  define TERM_EXPORT __declspec(dllexport)
+#  define DLL_EXPORT __declspec(dllexport)
 #else
-#  define TERM_EXPORT __attribute__((dllexport))
+#  define DLL_EXPORT __attribute__((dllexport))
 #endif
 
-static HANDLE hIn = NULL;
-static HANDLE hOut = NULL;
-static DWORD origModeIn = 0;
+static HANDLE h_in = NULL;
+static HANDLE h_out = NULL;
+static DWORD orig_mode_in = 0;
 
-TERM_EXPORT int term_enter_raw_mode(void)
+// Order must be in sync with InputChar.EscapeCode
+typedef enum {
+    EC_ESCAPE = 256,
+
+    EC_ARROW_UP,
+    EC_ARROW_DOWN,
+    EC_ARROW_LEFT,
+    EC_ARROW_RIGHT,
+   
+    EC_PAGE_UP,
+    EC_PAGE_DOWN,
+    EC_DELETE,
+    EC_END,
+    EC_HOME
+} EscapeCode;
+
+DLL_EXPORT int term_enter_raw_mode(void)
 {
-    if (hIn == NULL)
+    if (h_in == NULL)
     {
-        hIn = GetStdHandle(STD_INPUT_HANDLE);
+        h_in = GetStdHandle(STD_INPUT_HANDLE);
     }
-    if (hOut == NULL)
+    if (h_out == NULL)
     {
-        hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        h_out = GetStdHandle(STD_OUTPUT_HANDLE);
     }
-    if (hIn == INVALID_HANDLE_VALUE || hOut == INVALID_HANDLE_VALUE)
-    {
-        return 0;
-    }
-
-    if (!GetConsoleMode(hIn, &origModeIn))
+    if (h_in == INVALID_HANDLE_VALUE || h_out == INVALID_HANDLE_VALUE)
     {
         return 0;
     }
 
-    DWORD raw = origModeIn;
-    raw &= ~(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT | ENABLE_PROCESSED_INPUT);
-    raw |= ENABLE_EXTENDED_FLAGS; // ensure extended flags set
-    if (!SetConsoleMode(hIn, raw))
+    if (!GetConsoleMode(h_in, &orig_mode_in))
+    {
+        return 0;
+    }
+
+    DWORD raw = orig_mode_in;
+    
+    raw &= ~(ENABLE_LINE_INPUT |
+         ENABLE_ECHO_INPUT |
+         ENABLE_PROCESSED_INPUT |
+         ENABLE_QUICK_EDIT_MODE);
+    raw |= ENABLE_EXTENDED_FLAGS;
+    
+    if (!SetConsoleMode(h_in, raw))
     {
         return 0;
     }
@@ -41,49 +62,111 @@ TERM_EXPORT int term_enter_raw_mode(void)
     return 1;
 }
 
-TERM_EXPORT int term_exit_raw_mode(void)
+DLL_EXPORT int term_exit_raw_mode(void)
 {
-    if (hIn == NULL || hIn == INVALID_HANDLE_VALUE)
+    if (h_in == NULL || h_in == INVALID_HANDLE_VALUE)
     {
         return 0;
     }
-    if (!SetConsoleMode(hIn, origModeIn))
+    if (!SetConsoleMode(h_in, orig_mode_in))
     {
         return 0;
     }
     return 1;
 }
 
-TERM_EXPORT int term_read(char* c_out)
+DLL_EXPORT int term_read(unsigned short * c_out)
 {
-    if (hIn == NULL)
+    if (h_in == NULL)
     {
-        hIn = GetStdHandle(STD_INPUT_HANDLE);
+        h_in = GetStdHandle(STD_INPUT_HANDLE);
     }
-    if (hIn == INVALID_HANDLE_VALUE)
-    {
-        return 0;
-    }
-    DWORD read = 0;
-    if (!ReadFile(hIn, c_out, 1, &read, NULL))
+    if (h_in == INVALID_HANDLE_VALUE)
     {
         return 0;
     }
-    return read == 1;
+    
+    INPUT_RECORD rec;
+    DWORD read;
+
+    if (!GetNumberOfConsoleInputEvents(h_in, &read) || read == 0)
+    {
+        return 0;
+    }
+ 
+    if (!ReadConsoleInput(h_in, &rec, 1, &read))
+    {
+        return 0;
+    }
+
+    switch (rec.EventType)
+    {
+    case KEY_EVENT:
+        KEY_EVENT_RECORD key = rec.Event.KeyEvent;
+        if (!key.bKeyDown)
+        {
+            return 0;
+        }
+
+        if (key.uChar.AsciiChar)
+        {
+            *c_out = key.uChar.AsciiChar;
+            return 1;
+        }
+
+        switch (key.wVirtualKeyCode)
+        {
+        case VK_ESCAPE:
+            *c_out = EC_ESCAPE;
+            return 1;
+        case VK_UP:
+            *c_out = EC_ARROW_UP;
+            return 1;
+        case VK_DOWN:
+            *c_out = EC_ARROW_DOWN;
+            return 1;
+        case VK_LEFT:
+            *c_out = EC_ARROW_LEFT;
+            return 1;
+        case VK_RIGHT:
+            *c_out = EC_ARROW_RIGHT;
+            return 1;
+        case VK_PRIOR:
+            *c_out = EC_PAGE_UP;
+            return 1;
+        case VK_NEXT:
+            *c_out = EC_PAGE_DOWN;
+            return 1;
+        case VK_DELETE:
+            *c_out = EC_DELETE;
+            return 1;
+        case VK_END:
+            *c_out = EC_END;
+            return 1;
+        case VK_HOME:
+            *c_out = EC_HOME;
+            return 1;
+        default:
+            return 0;
+        }
+    
+    default:
+        return 0;
+    }
 }
 
-TERM_EXPORT int term_write(const char* str, int count)
+DLL_EXPORT int term_write(const char* str, int count)
 {
-    if (hOut == NULL)
+    if (h_out == NULL)
     {
-        hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        h_out = GetStdHandle(STD_OUTPUT_HANDLE);
     }
-    if (hOut == INVALID_HANDLE_VALUE)
+    if (h_out == INVALID_HANDLE_VALUE)
     {
         return 0;
     }
     DWORD written = 0;
-    if (!WriteFile(hOut, str, (DWORD)count, &written, NULL))
+    if (!WriteFile(h_out, str, (DWORD)count, &written, NULL))
     {
         return 0;
     }

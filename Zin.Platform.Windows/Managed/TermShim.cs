@@ -11,7 +11,7 @@ internal static partial class TermShim
     public static partial int ExitRawMode();
 
     [LibraryImport("termshim", EntryPoint = "term_read")]
-    public static partial int Read(out byte c);
+    public static partial int Read(out ushort c);
 
     [LibraryImport("termshim", EntryPoint = "term_write", StringMarshalling = StringMarshalling.Utf8)]
     public static partial int Write(string buf, int count);
