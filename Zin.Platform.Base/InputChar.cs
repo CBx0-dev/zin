@@ -6,21 +6,8 @@ public class InputChar : IEquatable<InputChar>
 {
     public readonly byte Raw;
     public readonly bool Escape;
-    public bool Ctrl => Raw is >= 1 and <= 26;
+    public bool Ctrl => !Escape && Raw is >= 1 and <= 26;
     public bool Invalid => !Escape && Raw == 0;
-
-    public char Char
-    {
-        get
-        {
-            if (Ctrl)
-            {
-                return (char)('a' + Raw - 1);
-            }
-
-            return (char)Raw;
-        }
-    }
 
     public InputChar(char c, bool ctrl)
     {
@@ -115,5 +102,7 @@ public class InputChar : IEquatable<InputChar>
         Delete,
         End,
         Home,
+
+        BACKSPACE
     }
 }

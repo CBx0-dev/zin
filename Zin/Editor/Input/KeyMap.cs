@@ -26,14 +26,15 @@ public sealed class KeyMap
         _actions[shortcut] = action;
     }
 
-    public void ExecuteShortcut(ZinEditor editor, InputChar input)
+    public bool ExecuteShortcut(ZinEditor editor, InputChar input)
     {
+        bool executedShortcut = false;
         long now = Stopwatch.GetTimestamp();
         long elapsedMs = Stopwatch.GetElapsedTime(_lastKeyTimeMs, now).Milliseconds;
 
         if (_buffer.Count > 0 && elapsedMs > TimeoutMs)
         {
-            TryExecuteExact(editor);
+            executedShortcut = TryExecuteExact(editor);
             _buffer.Clear();
         }
 
@@ -69,11 +70,15 @@ public sealed class KeyMap
         {
             exactMatch.Invoke(editor);
             _buffer.Clear();
+            return true;
         }
-        else if (exactMatch is null && !hasLonger)
+
+        if (exactMatch is null && !hasLonger)
         {
             _buffer.Clear();
         }
+
+        return executedShortcut;
     }
 
     private bool IsPrefix(Shortcut shortcut)
@@ -94,13 +99,19 @@ public sealed class KeyMap
         return true;
     }
 
-    private void TryExecuteExact(ZinEditor editor)
+    private bool TryExecuteExact(ZinEditor editor)
     {
         KeyValuePair<Shortcut, Action<ZinEditor>> exact = _actions.FirstOrDefault(s =>
             s.Key.Sequence.Length == _buffer.Count &&
             s.Key.Sequence.SequenceEqual(_buffer));
 
-        exact.Value?.Invoke(editor);
+        if (exact.Value is null)
+        {
+            return false;
+        }
+
+        exact.Value.Invoke(editor);
+        return true;
     }
 
     public static KeyMap Default()

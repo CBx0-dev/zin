@@ -45,7 +45,7 @@ public sealed class ZinEditor
     {
         Render();
 
-        while (true)
+        while (!_stopped)
         {
             InputChar c = _terminal.Read();
             if (c.Invalid)
@@ -54,11 +54,17 @@ public sealed class ZinEditor
                 continue;
             }
 
-            _keyMap.ExecuteShortcut(this, c);
-
-            if (_stopped)
+            if (_keyMap.ExecuteShortcut(this, c))
             {
-                break;
+                Render();
+                continue;
+            }
+
+            switch (Mode)
+            {
+                case EditorMode.Insert:
+                    HandleInsertMode(c);
+                    break;
             }
 
             Render();
@@ -82,13 +88,14 @@ public sealed class ZinEditor
         if (x < _offset.X)
         {
             _offset.X = x;
+            _ignoreDirty = true;
         } else if (x >= _offset.X + ScrollPanelWidth)
         {
             _offset.X = x - ScrollPanelWidth + 1;
+            _ignoreDirty = true;
         }
 
         _cursor.X = x - _offset.X;
-        _ignoreDirty = true;
     }
 
     public void SetYCursorAbsolute(int y)
@@ -96,13 +103,39 @@ public sealed class ZinEditor
         if (y < _offset.Y)
         {
             _offset.Y = y;
+            _ignoreDirty = true;
         } else if (y >= _offset.Y + ScrollPanelHeight)
         {
             _offset.Y = y - ScrollPanelHeight + 1;
+            _ignoreDirty = true;
         }
 
         _cursor.Y = y - _offset.Y;
-        _ignoreDirty = true;
+    }
+
+    private void HandleInsertMode(InputChar c)
+    {
+        ImmutableVector2 cursor = AbsoluteCursor;
+        // TODO think about special control chars
+        if (c.Ctrl)
+        {
+            return;
+        }
+
+        if (c.Escape && c.Raw == (byte)InputChar.EscapeCode.BACKSPACE)
+        {
+            if (cursor.X == 0)
+            {
+                return;
+            }
+
+            Content.Delete(cursor);
+            SetXCursorAbsolute(cursor.X - 1);
+            return;
+        }
+
+        Content.Insert(cursor, (char)c.Raw);
+        SetXCursorAbsolute(cursor.X + 1);
     }
 
     private void Render()

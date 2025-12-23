@@ -28,6 +28,7 @@ public class EditorContent
         _rows.AddRange(lines.Select(line => new GapBuffer(line)));
     }
 
+    public void Insert(ImmutableVector2 pos, char c) => Insert(pos.X, pos.Y, c);
     public void Insert(Vector2 pos, char c) => Insert(pos.X, pos.Y, c);
 
     public void Insert(int x, int y, char c)
@@ -40,6 +41,7 @@ public class EditorContent
         gapBuffer.InsertAt(x, c);
     }
 
+    public void Delete(ImmutableVector2 pos) => Delete(pos.X, pos.Y);
     public void Delete(Vector2 pos) => Delete(pos.X, pos.Y);
 
     public void Delete(int x, int y)
@@ -49,7 +51,7 @@ public class EditorContent
             throw new ArgumentOutOfRangeException(nameof(y));
         }
 
-        gapBuffer.DeleteAt(x);
+        gapBuffer.DeleteAt(x - 1);
     }
 
     public void Replace(Vector2 pos, char c) => Replace(pos.X, pos.Y, c);

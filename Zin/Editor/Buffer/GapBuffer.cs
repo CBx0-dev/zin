@@ -36,7 +36,7 @@ public sealed class GapBuffer
         }
 
         MoveGap(index);
-        _gapStart--;
+        _gapEnd++;
         Dirty = true;
     }
 
@@ -47,8 +47,8 @@ public sealed class GapBuffer
             return;
         }
 
-        MoveGap(index + 1);
-        _buffer[_gapStart - 1] = c;
+        MoveGap(index);
+        _buffer[_gapEnd] = c;
         Dirty = true;
     }
 
@@ -72,13 +72,13 @@ public sealed class GapBuffer
         {
             _buffer[_gapStart] = _buffer[_gapEnd];
             _gapStart++;
-            _gapEnd--;
+            _gapEnd++;
         }
 
-        while (_gapEnd > index)
+        while (_gapStart > index)
         {
+            _gapStart--;
             _gapEnd--;
-            _gapStart++;
             _buffer[_gapEnd] = _buffer[_gapStart];
         }
     }
@@ -90,7 +90,8 @@ public sealed class GapBuffer
             return;
         }
 
-        char[] buffer = new char[_buffer.Length * 2];
+        int newCapacity = Math.Max(_buffer.Length * 2, Length + size);
+        char[] buffer = new char[newCapacity];
         int gapEnd = buffer.Length - (_buffer.Length - _gapEnd);
 
         Array.Copy(_buffer, 0, buffer, 0, _gapStart);

@@ -19,6 +19,10 @@
     </Target>
     <!-- endregion -->
 
+    <ItemGroup>
+        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
+    </ItemGroup>
+
     <!-- region Linux x64 -->
     <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
         <ProjectReference Include="..\Zin.Platform.Linux\Zin.Platform.Linux.csproj"/>
@@ -38,9 +42,4 @@
         <DefineConstants>WINDOWS_X64</DefineConstants>
     </PropertyGroup>
     <!-- endregion -->
-
-    <ItemGroup>
-        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
-    </ItemGroup>
-
 </Project>

@@ -23,7 +23,9 @@ typedef enum {
     EC_PAGE_DOWN,
     EC_DELETE,
     EC_END,
-    EC_HOME
+    EC_HOME,
+
+    EC_BACKSPACE
 } EscapeCode;
 
 DLL_EXPORT int term_enter_raw_mode(void)
@@ -82,14 +84,20 @@ static int handle_key_event(KEY_EVENT_RECORD key, unsigned short * c_out)
         return 0;
     }
 
-    if (key.uChar.AsciiChar)
-    {
-        unsigned char ascii_key = key.uChar.AsciiChar;
+    CHAR ascii_key = key.uChar.AsciiChar;
+    WORD virtual_key = key.wVirtualKeyCode;
 
+    if (ascii_key)
+    {
         switch (ascii_key)
         {
         case '\x1b':
             *c_out = EC_ESCAPE;
+            return 1;
+        case 8: // STRG + H
+            // STRG + H = Backspace ambigous.
+            // We need to look up if virtual_key was set
+            *c_out = virtual_key == VK_BACK ? EC_BACKSPACE : 8;
             return 1;
         default:
             *c_out = ascii_key;
@@ -97,7 +105,7 @@ static int handle_key_event(KEY_EVENT_RECORD key, unsigned short * c_out)
         }
     }
 
-    switch (key.wVirtualKeyCode)
+    switch (virtual_key)
     {
     case VK_ESCAPE:
         *c_out = EC_ESCAPE;
