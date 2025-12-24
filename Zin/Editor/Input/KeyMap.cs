@@ -21,10 +21,7 @@ public sealed class KeyMap
         _lastKeyTimeMs = 0;
     }
 
-    public void RegisterAction(Shortcut shortcut, Action<ZinEditor> action)
-    {
-        _actions[shortcut] = action;
-    }
+    public void RegisterAction(Shortcut shortcut, Action<ZinEditor> action) => _actions[shortcut] = action;
 
     public bool ExecuteShortcut(ZinEditor editor, InputChar input)
     {

@@ -11,10 +11,7 @@ public sealed class CommandHandler
         _commands = new Dictionary<string, ICommand>();
     }
 
-    public void RegisterCommand(string prefix, ICommand command)
-    {
-        _commands[prefix] = command;
-    }
+    public void RegisterCommand(string prefix, ICommand command) => _commands[prefix] = command;
 
     public string Execute(ZinEditor editor, string commandString)
     {
