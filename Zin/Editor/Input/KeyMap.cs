@@ -121,7 +121,7 @@ public sealed class KeyMap
         map.RegisterAction(new Shortcut(new InputChar(InputChar.EscapeCode.ArrowLeft, true)), EditorActions.MoveCursorLeft);
         map.RegisterAction(new Shortcut(new InputChar(InputChar.EscapeCode.ArrowRight, true)), EditorActions.MoveCursorRight);
 
-        map.RegisterAction(new Shortcut( new InputChar(InputChar.EscapeCode.PageUp, true)), EditorActions.MovePageUp);
+        map.RegisterAction(new Shortcut(new InputChar(InputChar.EscapeCode.PageUp, true)), EditorActions.MovePageUp);
         map.RegisterAction(new Shortcut(new InputChar(InputChar.EscapeCode.PageDown, true)), EditorActions.MovePageDown);
 
         map.RegisterAction(new Shortcut(new InputChar(InputChar.EscapeCode.Home, true)), EditorActions.MoveToStartOfLine);

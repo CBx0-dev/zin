@@ -6,7 +6,7 @@ public sealed class QuitCommand : ICommand
     {
         if (!forced && editor.Content.OnceModified)
         {
-            return "Content was modified. Either save it or force exit it";
+            return "Content was modified. Either save it or force exit using ':q!'";
         }
 
         editor.Stop();

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Zin.Editor.Command;
 
@@ -18,9 +19,9 @@ public sealed class OpenCommand : ICommand
             editor.SetCursorAbsolute(0, 0);
             return string.Empty;
         }
-        catch
+        catch (Exception e)
         {
-            return "Failed to open file";
+            return e.Message;
         }
     }
 }

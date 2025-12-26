@@ -12,7 +12,6 @@ namespace Zin.Editor;
 public sealed class ZinEditor
 {
     private readonly ITerminal _terminal;
-    private readonly KeyMap _keyMap;
     private bool _stopped;
     private RenderChain _renderChain;
     private Vector2 _cursor;
@@ -20,7 +19,8 @@ public sealed class ZinEditor
 
     public EditorContent Content;
     public EditorMode Mode;
-    public CommandHandler CommandHandler;
+    public readonly CommandHandler CommandHandler;
+    public readonly KeyMap KeyMap;
     public bool IgnoreDirty;
     public bool ExecuteShortcuts;
     public Vector2 VirutalCursor;
@@ -33,10 +33,9 @@ public sealed class ZinEditor
     public int ScrollPanelWidth => Width;
     public int ScrollPanelHeight => Height - 1;
 
-    public ZinEditor(ITerminal terminal, KeyMap keyMap)
+    public ZinEditor(ITerminal terminal)
     {
         _terminal = terminal;
-        _keyMap = keyMap;
         _stopped = false;
         _renderChain = new RenderChain(terminal.Width, terminal.Height);
         _cursor = new Vector2();
@@ -44,7 +43,8 @@ public sealed class ZinEditor
 
         Content = new EditorContent(terminal.Height);
         Mode = new CommandMode(this);
-        CommandHandler = CommandHandler.Default();
+        CommandHandler = new CommandHandler();
+        KeyMap = new KeyMap();
         IgnoreDirty = true;
         ExecuteShortcuts = true;
         VirutalCursor = new Vector2();
@@ -64,7 +64,7 @@ public sealed class ZinEditor
                 continue;
             }
 
-            if (ExecuteShortcuts && _keyMap.ExecuteShortcut(this, c))
+            if (ExecuteShortcuts && KeyMap.ExecuteShortcut(this, c))
             {
                 Render();
                 continue;

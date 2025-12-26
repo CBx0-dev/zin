@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Zin.Editor;
-using Zin.Editor.Input;
+using Zin.Editor.Plugin.Config;
 using Zin.Platform;
 
 namespace Zin;
@@ -16,14 +16,20 @@ public static class Program
 #else
 #error Unknown target platform
 #endif
-        KeyMap keyMap = KeyMap.Default();
         terminal.EnableRawMode();
 
-        ZinEditor editor = new ZinEditor(terminal, keyMap);
+        ZinEditor editor = new ZinEditor(terminal);
+        LoadConfig(editor);
 
         editor.Content.OpenContent(GenerateLines());
 
         editor.Run();
+    }
+
+    private static void LoadConfig(ZinEditor editor)
+    {
+        using ConfigLoader loader = new ConfigLoader(editor);
+        loader.LoadConfig();
     }
 
     private static IEnumerable<string> GenerateLines()

@@ -28,10 +28,6 @@
     </Target>
     <!-- endregion -->
 
-    <ItemGroup>
-        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
-    </ItemGroup>
-
     <!-- region Linux x64 -->
     <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
         <ProjectReference Include="..\Zin.Platform.Linux\Zin.Platform.Linux.csproj"/>
@@ -51,4 +47,11 @@
         <DefineConstants>WINDOWS_X64</DefineConstants>
     </PropertyGroup>
     <!-- endregion -->
+
+    <ItemGroup>
+        <ProjectReference Include="..\Zin.Platform.Base\Zin.Platform.Base.csproj"/>
+        <PackageReference Include="Jint" Version="4.4.2" />
+        
+        <EmbeddedResource Include="Default\Default.js" />
+    </ItemGroup>
 </Project>
