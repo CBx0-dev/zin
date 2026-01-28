@@ -21,7 +21,7 @@ public static class Program
         ZinEditor editor = new ZinEditor(terminal);
         LoadConfig(editor);
 
-        editor.Content.OpenContent(GenerateLines());
+        editor.Content.OpenContent("<stdin>", GenerateLines());
 
         editor.Run();
     }

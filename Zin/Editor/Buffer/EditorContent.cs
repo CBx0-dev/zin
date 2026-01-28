@@ -9,6 +9,7 @@ public class EditorContent
 {
     private List<GapBuffer> _rows;
 
+    public string FileName { get; private set; }
     public int RowCount => _rows.Count;
     public bool OnceModified { get; private set; }
 
@@ -18,15 +19,17 @@ public class EditorContent
         OnceModified = false;
     }
 
-    public void OpenContent(string content)
+    public void OpenContent(string fileName, string content)
     {
+        FileName = fileName;
         _rows.Clear();
         _rows.AddRange(content.Split(Environment.NewLine).Select(line => new GapBuffer(line)));
         OnceModified = false;
     }
 
-    public void OpenContent(IEnumerable<string> lines)
+    public void OpenContent(string fileName, IEnumerable<string> lines)
     {
+        FileName = fileName;
         _rows.Clear();
         _rows.AddRange(lines.Select(line => new GapBuffer(line)));
         OnceModified = false;

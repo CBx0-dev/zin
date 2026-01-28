@@ -15,7 +15,7 @@ public sealed class OpenCommand : ICommand
         string filePath = args[1];
         try
         {
-            editor.Content.OpenContent(File.ReadAllLines(filePath));
+            editor.Content.OpenContent(filePath, File.ReadAllLines(filePath));
             editor.SetCursorAbsolute(0, 0);
             return string.Empty;
         }

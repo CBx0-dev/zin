@@ -21,17 +21,21 @@ public sealed class ZinEditor
     public EditorMode Mode;
     public readonly CommandHandler CommandHandler;
     public readonly KeyMap KeyMap;
+
     public bool IgnoreDirty;
     public bool ExecuteShortcuts;
+
     public Vector2 VirutalCursor;
     public bool UseVirtualCursor;
+
+    public IOutputPipe OutputPipe;
 
     public ImmutableVector2 AbsoluteCursor => new ImmutableVector2(_cursor.X + _offset.X, _cursor.Y + _offset.Y);
     public int Width => _terminal.Width;
     public int Height => _terminal.Height;
 
     public int ScrollPanelWidth => Width;
-    public int ScrollPanelHeight => Height - 1;
+    public int ScrollPanelHeight => Height - 2;
 
     public ZinEditor(ITerminal terminal)
     {
@@ -49,6 +53,7 @@ public sealed class ZinEditor
         ExecuteShortcuts = true;
         VirutalCursor = new Vector2();
         UseVirtualCursor = false;
+        OutputPipe = new DefaultOutputPipe();
     }
 
     public void Run()
@@ -127,6 +132,7 @@ public sealed class ZinEditor
         _renderChain.MoveCursor();
 
         RenderRows();
+        RenderStatusLine();
         RenderBottomLine();
 
         _renderChain.MoveCursor(UseVirtualCursor ? VirutalCursor : _cursor);
@@ -138,14 +144,14 @@ public sealed class ZinEditor
 
     private void RenderRows()
     {
-        for (int y = 0; y < _terminal.Height - 1; y++)
+        for (int y = 0; y < ScrollPanelHeight; y++)
         {
             if (Content.TryGetLine(y + _offset.Y, out GapBuffer line))
             {
                 if (IgnoreDirty || line.Dirty)
                 {
                     _renderChain.ClearLineRight();
-                    _renderChain.Write(line.ToString(), _offset.X, _terminal.Width);
+                    OutputPipe.RenderLine(_terminal, _renderChain, line, _offset.X, _terminal.Width);
                     line.Dirty = false;
                 }
             }
@@ -161,6 +167,13 @@ public sealed class ZinEditor
         IgnoreDirty = false;
     }
 
+    private void RenderStatusLine()
+    {
+        _renderChain.MoveCursor(0, Height - 2);
+        _renderChain.ClearLine();
+        _renderChain.Write(Content.FileName, _terminal.Width);
+    }
+
     private void RenderBottomLine()
     {
         string modeText = Mode.DisplayName;
@@ -173,7 +186,7 @@ public sealed class ZinEditor
 
         if (Mode.GetStatusText(out string statusText))
         {
-            _renderChain.Write(statusText, Math.Min(statusText.Length, positionTextLeftOffset - 2));
+            OutputPipe.RenderLine(_terminal, _renderChain, statusText, 0, positionTextLeftOffset - 2);
         }
 
         _renderChain.MoveCursor(positionTextLeftOffset, Height - 1);

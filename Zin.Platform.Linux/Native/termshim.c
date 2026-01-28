@@ -190,7 +190,7 @@ int term_read(unsigned short* c_out)
     case 127: // Backspace
         *c_out = EC_BACKSPACE;
         return 1;
-    case '\b':
+    case '\b': // Enter
         *c_out = EC_ENTER;
         return 1;
     }
