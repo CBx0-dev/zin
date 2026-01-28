@@ -148,7 +148,7 @@ static int handle_key_event(KEY_EVENT_RECORD key, unsigned short * c_out)
     }
 }
 
-DLL_EXPORT int term_read(unsigned short * c_out)
+DLL_EXPORT int term_read(unsigned short* c_out)
 {
     if (h_in == NULL)
     {

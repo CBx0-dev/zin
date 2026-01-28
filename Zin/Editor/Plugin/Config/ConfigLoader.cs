@@ -13,9 +13,11 @@ public class ConfigLoader : IDisposable
     private const string CONFIG_FILE_NAME = "config.js";
 
 #if WINDOWS_X64
-    private const string CONFIG_FOLDER_NAME = "zin";
+    private const string LOCAL_CONFIG_FOLDER_NAME = "zin";
+    private const string GLOBAL_CONFIG_FOLDER_NAME = "zin";
 #elif LINUX_X64
-    private const string CONFIG_FOLDER_NAME = ".zin";
+    private const string LOCAL_CONFIG_FOLDER_NAME = ".zin";
+    private const string GLOBAL_CONFIG_FOLDER_NAME = "zin";
 #else
 #error Unknown target platform
 #endif
@@ -41,7 +43,7 @@ public class ConfigLoader : IDisposable
         if (TryLoadConfigFile(defaultConfigPath) == 1)
         {
             Directory.CreateDirectory(GlobalConfigPath);
-
+            
             using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(EMBEDDED_DEFAULT_CONFIG);
             if (stream is null)
             {
@@ -88,11 +90,11 @@ public class ConfigLoader : IDisposable
     static ConfigLoader()
     {
 #if WINDOWS_X64
-        GlobalConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), CONFIG_FOLDER_NAME);
-        LocalConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), CONFIG_FOLDER_NAME);
+        GlobalConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), GLOBAL_CONFIG_FOLDER_NAME);
+        LocalConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LOCAL_CONFIG_FOLDER_NAME);
 #elif LINUX_X64
-        GlobalConfigPath = Path.Combine("/etc", CONFIG_FOLDER_NAME);
-        LocalConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), CONFIG_FOLDER_NAME);
+        GlobalConfigPath = Path.Combine("/etc", GLOBAL_CONFIG_FOLDER_NAME);
+        LocalConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), LOCAL_CONFIG_FOLDER_NAME);
 #else
 #error Unknown target platform
 #endif
